@@ -1,0 +1,71 @@
+Frontend Independiente del HW
+
+C/C++/Fortan....etc -> Frontend
+
+Independiente del Lenguaje y del HW -> Middlend -> Mas utilizado hoy en dia 
+
+Independiente del lenguaje -> Backend
+
+El compilador espera codigo claro
+
+El codigo se optimiza pensando en el hw y se construye el ejecutable
+ANALISIS
+Codigo fuente -> Analizador Lexico -> Analizador Sintactico -> Analizador Semantico
+
+analizador lexico analiza el c.fuente y obtiene tokens (if whiles, puntos y coma,variables)
+
+
+el sintactico mira la estructura de como se escribieron las sentencias,
+ se fija que se hayan escrito en orden correcto. Y arma un arbol sintactico
+ 
+El analizador semantico se fija si el arbol sintactico tiene sentido -> Arbol Sintactico con anotaciones
+ 
+Terminamos con el frontend.
+
+SINTESIS
+
+El generador de codigo intermedio (middleend) existen lenguajes intermedios que optimizan el fuente.
+ 
+Este codigo intermedio pasa por el optimizador y genera un codigo intermedio optimizado
+ 
+El codigo intermedio optimizado pasa por el generador de codigo objetivo y se crea el codigo objetivo
+ 
+ codigo fuente del programador -> el compilador tomael fuente y pasa por el preprocesador y devuelve codigo fuente puro ->
+ 
+
+
+
+
+ Expresiones regulares (tarea iterativa)
+
+  a b  -> concatenación
+
+ a | b -> selección
+
+ (a b) -> agrupación
+
+  a*   -> el * se reemplaza por 0 o más coincidencias (repeticion)
+  
+  a+   -> el + se reemplaza por 1 o más coincidencias (repeticion)
+
+   .   -> cualquier caracter
+
+  a?   -> 0 o 1 vez
+
+ [A-Za-z] -> enumeracion
+
+ [^a-z] -> negacion
+
+  ENTERO -> DIGITO DIGITO* -> captura cualquier entero -> 123 -> 1 con DIGITO y 12 DIGITO*
+  ENTERO -> DIGITO+ lo mismo pero mejor
+  ENTEROCS -> ('+' | '-')? DIGITO+ el signo puede estar o no estar
+
+  LINEA : (LETRA | ENTERO | [{}();+=)]*'\n';-> detecta alguna linea
+
+  
+programa : instrucciones
+instrucciones : instruccion instrucciones
+			  |
+			  ;
+
+instruccion : LINEA { System.out.println("-> |" + $OTRO.getText() + "|"); };

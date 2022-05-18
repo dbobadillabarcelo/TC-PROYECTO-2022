@@ -1,0 +1,69 @@
+ * Analisis lexico
+
+Verifica que las palabras usadas pertenezcan al lenguaje (verifica ortografia)
+Los vamos a implementar utilizando expresiones regulares.
+Las expresiones regulares tienen implementacion ITERATIVA.
+
+ * Analisis sintaticto
+
+Verifica que la secuencia de tokens es correcta. 
+Estructura gramatical del lenguaje.
+
+Lo vamos a imeplemntar utilizando reglas gramaticales.
+Las reglas sintacticas tienen implementacion recursiva.
+
+Se recomienda escribir primero todas las expresiones regulares, y luego la reglas gramaticales.
+Se puede realizar en forma: 
+	- Descendente: Top-Down parsing -> de la raiz a las hojas
+	- Ascendente: Bottom-Up parsing -> de las hojas a la raiz
+
+* AS Descendente
+acciones -> derivar y match
+
+s : ( s ) s    por cada parentesis que se abre se pueden anidar las reglas
+|
+;
+
+
+entrada -> ( ( ) )( )
+los token no son derivables, solamente las reglas
+                 entrada
+$ s                  ( ( ) ) ( ) $ derivar      siempre arranca derivando (ya q puede derivar en mas de 1 camino) (s desaparece y se reemplaza por la regla de derecha a izq (pila))
+$ s ) s (            ( ( ) ) ( ) $ match        veo si el toquen de la izq coincide con el de la derecha, si matchea lo saco
+$ s ) s                ( ) ) ( ) $ derivar      '(' coincide con la regla gramatical s 
+$ s ) s ) s (          ( ) ) ( ) $ match
+$ s ) s ) s              ) ) ( ) $ derivar       derivo la regla s por vacio porque la entrada no tengo matcheo de token
+$ s ) s )                ) ) ( ) $ match       
+$ s ) s                    ) ( ) $ derivar
+$ s )                      ) ( ) $ match 
+$ s                          ( ) $ derivar
+$ s ) s (                    ( ) $ match
+$ s ) s                        ) $ derivar
+$ s )                          ) $ match
+$ s                              $ derivar
+$                                $ OK                no tengo reglas gramaticales ni tokens, tamos bien
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

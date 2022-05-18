@@ -1,0 +1,26 @@
+grammar compiladores;
+
+@header {
+package com.primerproyecto;
+}
+
+//Definir una Expresión Regular para capturar fechas correspondientes a los meses pares (formato DD/MM/YYYY).
+FECHAPAR : (('0'[1-9] | [12][0-9] |'30') '/' ('0'[246])) | (('0'[1-9] | [12][0-9] |'3'[01]) '/' ('08' | '1'[02])) '/' [0-9][0-9][0-9][0-9] ;
+//Definir una Expresión Regular para capturar horas correspondientes a las horas entre las 08:00 y las 12:59 (formato HH:MM).
+HORA1: ('0'[89] | '1'[0-2] ) ':' ([0-5][0-9]);
+//Definir una Expresión Regular para capturar horas correspondientes a las horas entre las 18:30 y las 21:30 (formato HH:MM)
+HORA2: ('18:'[3-5][0-9]) | (('19'|'20') ':' [0-5][0-9]) | ('21:'([0-2][0-9] | '30'));
+
+OTRO : . -> skip;
+//WS : [\t\n\r] -> skip; // Saltea los saltos de linea, espacios en blanco, y retornos de carro
+
+/*s : ID     { System.out.println("ID ->" + $ID.getText() + "<--"); }         s
+  | NUMERO { System.out.println("NUMERO ->" + $NUMERO.getText() + "<--"); } s
+  | OTRO   { System.out.println("Otro ->" + $OTRO.getText() + "<--"); }     s
+  | EOF
+  ;
+*/
+s : FECHAPAR  { System.out.println("FECHAPAR en linea " + $FECHAPAR.getLine() + " -> " + $FECHAPAR.getText() +"<--"); } s
+  | HORA1     { System.out.println("HORA1 en linea "    + $HORA1.getLine()    + " -> " + $HORA1.getText()    +"<--"); } s
+  | HORA2     { System.out.println("HORA2 en linea "    + $HORA2.getLine()    + " -> " + $HORA2.getText()    +"<--"); } s 
+  | EOF;

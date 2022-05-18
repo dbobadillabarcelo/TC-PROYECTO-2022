@@ -1,0 +1,22 @@
+En la tabla de simbolos registramos los ID
+
+Metodos
+
+AddID
+SearchLocalID
+SearchID
+
+- Contextos 
+
+AddCtx
+DelCtx
+
+- Variables
+    El compilador verifica
+    *Que existe
+    *Tipo de dato
+    *Nombre
+    *Inicializada
+    *Usada
+
+- Funciones

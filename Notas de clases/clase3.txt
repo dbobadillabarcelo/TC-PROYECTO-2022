@@ -1,0 +1,28 @@
+Ascendente -> de las hojas a la raiz
+
+Reglas: Desplazar
+        Reducir
+
+Entrada ( ( ) ) ( )
+
+
+s : ( s ) s
+|
+;
+
+$                ( ( ) ) ( ) $ Desplazar
+$ (                ( ) ) ( ) $ Desplazar
+$ ( (                ) ) ( ) $ Reducir      si desplazo me queda una regla inexistente
+$ ( ( s              ) ) ( ) $ Desplazar
+$ ( ( s )              ) ( ) $ Reducir
+$ ( ( s ) s            ) ( ) $ Reducir
+$ ( s                  ) ( ) $ Desplazar
+$ ( s )                  ( ) $ Desplazar
+$ ( s ) (                  ) $ Reducir
+$ ( s ) ( s                ) $ Desplazar
+$ ( s ) ( s )                $ Reducir
+$ ( s ) ( s ) s              $ Reducir
+$ ( s ) s                    $ Reducir
+$ s                          $ OK
+
+
