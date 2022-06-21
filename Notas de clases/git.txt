@@ -25,3 +25,5 @@ git remote -v: vemos a donde se va a hacer push/fetch
 git remote remove origin: borramos el origin
 
 git remote add origin https://github.com/dbobadillabarcelo/TCproyecto2022.git : para agregar un origen
+
+git push -u origin main

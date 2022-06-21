@@ -1,0 +1,13 @@
+@startuml a
+
+class TablaSimbolos {
+    - List contextos
+    + buscarId( id )
+    + addId( id )
+}
+
+
+
+TablaSimbolos --> List
+List --> Map
+@enduml

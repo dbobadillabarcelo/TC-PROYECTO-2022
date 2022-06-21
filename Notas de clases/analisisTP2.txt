@@ -1,0 +1,173 @@
+analisis lexico -> definidos la ortografia y lo que encuentra lo convierte en tokenfa-spin
+
+Analizador semantico: Los tokens entran al analizador sintatico y se fija q esos tokens conformen una estructura correcta, se fija q las oraciones esten bien escritas
+, revisa las estrucutras de las oraciones
+
+Analisis semantico se verifica que lo que está escrito tenga sentido y sea viable. Es decir que se pueda ejecutar en una computadora.
+Para esto utilizamos la tabla de simbolos.
+
+En la tabla de simbolos, que es una herramienta donde se van a registrar los tokens, ahi se agregan las variables y las funciones 
+para saber cuales son sus caracteristicas, es decir, si la variable existe o no existe, si està en el contexto esperado o en
+un contexto de mas nivel (global), si es privado, publico, si son constantes, ver cual es su tipo de dato, si está inicializada, si 
+está usada, etc.
+
+Una variable/funcion son una referencia a algo en memoria, en vez de apuntar a un dato, la funcion apunta a una secuencia de codigo ejecutable
+dentro del programa.
+En la tabla de simbolos las funciones va a tener un tipo de dato que retorna, la lista de argumentos que recibe, el tipo de datos de sus argumentos.
+
+Para eso registramos en la TS los identificadores.
+ - nombres de variables
+ - nombres de funciones
+ - estructuras de datos
+
+Posiblemente tambien palabaras reservadas.
+
+¿Que cosas necesitamos saber de un identificador?
+
+ - el Token (string).
+ - el Tipo de dato (string). 
+ - saber si está inicializada (definida). (bool)
+ - saber si está usada o no. (bool)
+ - si no esta usada ni inicializada, podemos decir que esta declarada
+ - si es función, conocer los argumentos (nos interesa el tipo de dato de estos) para saber si se pueden usar esos tipos 
+   de dato cuando se llama la funcion, ATENCION: Los argumentos son de tamaño variable pq pueden ser mas de 1.
+ 
+ int x; tengo una declaracion, digo que voy a usar la variable x pero nunca la inicialicé.
+ int x = 0; acá esta definida, es decir que esta declarada y se le asigna un valor inicial (inicializada).
+
+ int mayor(int a, int b); esto es un prototipo de funcion (declaracion), y no está definida.
+ int mayor(int a, int b){ 
+  ...                     cuando escribo el cuerpo de la funcion, la estamos definiendo
+  }
+
+Implementando la TS
+ 
+ - Como lo hacemos en Java, necesitamos que sea una clase (objetos) o estructura de datos (imperativo)
+   los campos de un identificador serian los atributos de un objeto.
+    + Token, TipoDato, Inicializada, Usada -> es comun tanto para variables como para funciones.
+    + Conviene usar herencia ya que usamos clases, para separar variables de funciones.
+ - Necesitamos que la TS sea una coleccion
+   + Podemos usar una lista enlazada, pero no podemos agregar el elemento directamente ya que debemos ver si no está en uso(ver si existe o no).
+     Tambien puede suceder que esté en otro contexto.
+
+        Lo siguiente es valido en Java y C
+        int x = 1;       (contexto global)
+        int main (){      (contexto local a la funcion main)
+        int x = 5;
+            {
+                int x = 3; (contexto local a este bloque de codigo)
+            }
+        }
+         Si yo tengo 3 variales x en la lista enlazada, tengo que recorrer toda la lista y cada vez que veo una x tengo que ver si está en 
+         el mismo contexto en el que estoy parado, y cuando salga del contexto tengo que borrar la x que es local al contexto.
+         Por lo que se complica la busqueda.
+
+        if()               si es sin llave se lee la siguiente instruccion
+            int x = 3;     si agregamos llaves despues del if viene una instruccion, pero es compuesta, es decir que se leen como un solo paquete
+            x += 4;
+
+        La tabla de simbolos se la usa siempre, incluso despues de haber compilado y ejecutado el archivo. Por ejemplo, cuando hacer debug de un programa
+        no seria posible sin la tabla de simbolos en el ejecutable.
+
+    + Lo mas apropiado es un diccionario (Map) en el cual sus palabras son los identificadores de las variables / funciones 
+      Dado un token me fijo si existe en mi diccionario, si existe lo usamoos en caso de ser necesario, y si lo tengo que agregar
+      pq está declarado lo puedo incorporar como una palabra nueva, y me resuelve el problema de la busqueda de los ID, pero no
+      el problema de los contextos. Aun asi sigue siendo mejor que la lista.
+
+    + Usar una mezcla de lista enlazada+ diccionario (Map)   me va a simplificar la implementacion.
+      La TS va a ser una lista de diccionarios, cada nodo de la lista va a ser un contexto de mi programa
+      entonces la TS iniciliza con un contexto global, y cada vez que entramos a un nuevo contexto (cuando abrimos una llave) 
+      generamos un nuevo nodo de esa lista, es decir un nuevo diccionario, si el contexto cierra, borro el ultimo nodo y su informacion.
+    + Estos diccionarios buscan por clave y no por posicion, es decir, mapeamos un token contra el objeto que tiene 
+      la info vinculada a ese identificador.
+    + La TS seria una lista de contextos, y va a tener un Map por cada nodo de la lista.
+
+Funcionalidades de la TS
+ + Antes de agregar un identificador, tengo que buscarlo para ver si existe o no en el contexto actual. 
+   - Buscar el identificador en el contexto local, si no está, lo agrego al contexto local. (sirve para agregarla)
+     Simplemente consultamos en el mapa del contexto local si la variable existe o no.
+   - Si estoy usando la variable, la tengo que buscar en todos los contextos, ya que puede que no este en el contexto local pero si en un contexto de mayor
+     jerarquia o a nivel global. (sirve para usar)
+     Nos posicionamos en el contexto actual (ultimo nodo de la lista) y busco en todos los contextos volviendo hacia atras.
+ + Agregar un identificador en el contexto actual, y no en cualquier contexto.
+
+
+Tabla simbolos es una lista de mapas
+La lista de mapas colecciona identificadores
+Profe recomienda que TipoDato sea un enumerado
+Funcion seria una lista de tipos de dato(argumentos), debemos ver los que los tipos de datos puestos esten declarados
+Variable simplemente es un ID, seria bueno ver si es usada o no
+
+
+Luego de tener la TS tenemos que ver como interactuar con la TS desde nuestro programa y hacer que se incorporen los tokens en la TS
+para ver las variables, funciones, etc.
+Leyendo las reglas gramaticales, mediante el uso de Listeners se buscan y se agregan los token a la TS
+
+Para hacer que funcionen los Listeners y los Visitors seteamos los valores en true en el settings.json
+El BaseListener es la clase de la que deberiamos heredar, no tocar las clases BaseListener ni Listener, ya que
+BaseListener implementa la interface Listener.
+El Listener es una interfaz que nos permite saber si pasó algo en el arbol.
+EnterPrograma significa que llegamos a un nodo de tipo programa.
+ExitPrograma significa que salimos de un nodo de tipo programa.
+Para todas las reglas gramaticas tenemos un Enter y un Exit (enter/exit de instrucciones,bloque,instruccion, etc)
+Si queremos hacer cosas con referencia a las variables, estas las vamos a encontrar cuando veamos un factor..
+
+Vamos a tener una subclase llamada MiListener que herede de BaseListener para crear nuestro Listener
+Aca vamos a sobreescribir las funciones que nos interesan, vamos a usar los elementos de entrada y salida del nodo, que
+son los metodos de la interfaz.
+El BaseListener agrega 4 metodos mas
+enterEveryRule que se va a ejecutar cada vez que se entre a cualquier regla, pasa lo mismo con exitEveryRule
+visitTerminal nos interesa cuando encontramos a un token (hoja del arbol), por ej, si la hoja es un ID y estamos en una regla de 
+declaracion, tenemos que ver si la incorporamos o no a la TS, si feuse una regla de aplicacion verificariamos que exista.
+Si se produce un error, visitErrorNode indica donde se produce (cajita roja del arbol)
+
+Trabajamos con nodos y contextos, la API de ANTLR tiene documentacion 
+la interface TerminalNode tiene un metodo getSymbol() que devuelve un Token
+La interface Token tiene varios metodos
+getChannel(): devolver el canal de ese token.
+getCharPositionInLine(): devuelve donde comienza el token en la linea.
+getInputStream(): devuelve cual es el CharStream que estamos leyendo (archivo de entrada).
+getLine(): numero de linea donde se encuentra el token.
+getStartIndex(): indice donde comienza el token.
+getStopIndex(): indice donde termina el token.
+getText(): devuelve el texto del token
+getTokenIndex(): Devuelve el indice del token en el archivo con extension .tokens
+getTokenSource(): Devuelve de donde salio el token
+getType(): devuelve el tipo de token, pero con un valor entero.
+
+ErrorNode es una version simplificada de TerminalNode
+sirve para clasificar mis nodos, en este caso de error
+
+La clase ParserRuleContext tiene interfaces implementadas, un contexto funciona como un arbol
+tiene una lista de los hijos, cada nodo es un nuevo arbol y ese arbol tiene hojas.
+tiene un campo de excepciones en caso de que algo salga mal en el parseo.
+tiene el token que estamos mirando, el start y el stop token que puede ocurrir que no sean iguales en una regla.
+y bastantes metodos
+addAnyChild -> forzar la creacion de un arbol agregando nuevos nodos
+addChild(RuleContext) -> agregar nodos hijos de tipo regla
+addChild(TerminalNode) -> agregar nodos de tipo terminal 
+addChild(Token) -> agregar nodos de tipo token 
+addErrorNode(ErrorNode) -> Si encontramos un error que no detecto antlr podemos usar esto para indicar que hay un problema
+enterRule y exitRule
+getChild -> para acceder a los hijos a traves de un dato primitivo, como un indice, usando un for.
+getChildCount -> devuelve la cantidad de hijos de un nodo
+getParent -> devuelve el padre del nodo, o regla padre
+
+getStart() -> primer token de la regla 
+getStop() -> ultimo token de la regla 
+getToken(int type, int i) -> para ver el token en la posicion i  
+getTokens(int type) -> devuelve lista de tokens 
+removeLastChild() -> para eliminar un nodo hijo 
+
+clase ruleContext
+getRuleContext -> devuelve el contexto de la regla 
+
+
+SOBREESCRIBIR SOLAMENTE LAS REGLAS QUE NOS HACEN FALTA 
+porque ya estan implementadas, no olvidar el override 
+
+public class MiListener extends tp1BaseListener{
+    @Override public void exitEveryRule(ParserRuleContext ctx) { 
+      system.out.println(" --> " + ctx.getStart()); aca estariamos viendo a que regla entramos 
+    } 
+}
