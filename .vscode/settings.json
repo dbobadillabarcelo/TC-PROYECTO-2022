@@ -12,5 +12,10 @@
     "antlr4.debug": {
         "visualParseTreeHorizontal": false,
         "visualParseTreeClustered": true
-    }
+    },
+    "files.exclude": {
+        "**/.antlr": true
+    },
+    "maven.view": "flat",
+    "java.debug.settings.onBuildFailureProceed": true
 }

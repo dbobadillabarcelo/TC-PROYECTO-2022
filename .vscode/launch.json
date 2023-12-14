@@ -28,8 +28,8 @@
             //"input": "primerproyecto/input/FechasHoras.txt",
             //"input": "primerproyecto/input/parentesis.txt",
             //"input": "primerproyecto/input/codigo.txt",
-            //"input": "primerproyecto/input/mate.txt", 
-            "input": "primerproyecto/input/tp1.txt",
+            "input": "primerproyecto/input/mate.txt", 
+            //"input": "primerproyecto/input/tp2.txt",
             // Simbolo inicial
             "startRule": "prog",
             // Muestra Arbol Sintactico

@@ -1,26 +1,28 @@
 package com.primerproyecto;
-
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import com.primerproyecto.tablaSimbolos.ErrorsListener;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-// Las diferentes entradas se explicaran oportunamente
 public class App {
     public static void main(String[] args) throws Exception {
         //System.out.println("Hello, Compilador!!!");
-        System.out.println("TP1 Bobadilla - Genaro");
+        System.out.println("TC Final - Bobadilla - Genaro");
         // create a CharStream that reads from file
         //CharStream input = CharStreams.fromFileName("primerproyecto/input/entrada.txt");
         //CharStream input = CharStreams.fromFileName("primerproyecto/input/FechasHoras.txt");
         //CharStream input = CharStreams.fromFileName("primerproyecto/input/parentesis.txt");
         //CharStream input = CharStreams.fromFileName("primerproyecto/input/codigo.txt");
-        //CharStream input = CharStreams.fromFileName("primerproyecto/input/mate.txt");
-        CharStream input = CharStreams.fromFileName("primerproyecto/input/tp1.txt");
+        CharStream input = CharStreams.fromFileName("primerproyecto/input/mate.txt");
+        //CharStream input = CharStreams.fromFileName("primerproyecto/input/tp1.txt");
+        //CharStream input = CharStreams.fromFileName("primerproyecto/input/tp2.txt");
         System.out.println(input.getSourceName());
         // create a lexer that feeds off of input CharStream
         //programaLexer lexer = new programaLexer(input);
-        tp1Lexer lexer = new tp1Lexer(input);
+        tp2Lexer lexer = new tp2Lexer(input);
         
         // create a buffer of tokens pulled from the lexer
         // Entra texto -> Salen tokens
@@ -29,26 +31,29 @@ public class App {
         // create a parser that feeds off the tokens buffer
         // El parser es el analizador sintáctico
         //programaParser parser = new programaParser(tokens);
-        tp1Parser parser = new tp1Parser(tokens);
+        tp2Parser parser = new tp2Parser(tokens);
                 
-        // create Listener
+        ErrorsListener errorsListener = new ErrorsListener();
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorsListener);
+        // create Listener -> activar el listener una vez creado
+        //construyendo un objeto MiListener
         // ExpRegBaseListener escucha = new Escucha();
-
+        tp2BaseListener escucha = new MyListener();
         // Conecto el objeto con Listeners al parser
         // parser.addParseListener(escucha);
-
+        parser.addParseListener(escucha);
+        System.out.println("\n");
         // Solicito al parser que comience indicando una regla gramatical
         // En este caso la regla es el simbolo inicial
-        parser.prog();
+        //parser.prog();
         // ParseTree tree =  parser.s();
+        ParseTree tree =  parser.prog();;
+        if(!((MyListener)escucha).getError()) {
         // Conectamos el visitor
-        // Caminante visitor = new Caminante();
-        // visitor.visit(tree);
-        // System.out.println(visitor);
-        // System.out.println(visitor.getErrorNodes());
-        // Imprime el arbol obtenido
-        // System.out.println(tree.toStringTree(parser));
-        // System.out.println(escucha);
+        myVisitor visitor = new myVisitor();
+        visitor.visit(tree);
+        }
         
     }
 }

@@ -31,7 +31,7 @@
   <groupId>org.antlr</groupId>
   <artifactId>antlr4</artifactId>
   <!-- ultima version Agosto 2021 -->
-  <version>4.8</version>
+  <version>4.13.1</version>
   </dependency>
 
   </dependencies>
